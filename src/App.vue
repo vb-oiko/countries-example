@@ -1,34 +1,29 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      REST Countries API app example
+    <v-navigation-drawer app v-model="drawer" stateless color="primary" clipped>
+      <v-radio-group v-model="selectedRegion" mandatory dark class="ml-3">
+        <v-radio
+          v-for="region in regions"
+          :key="region"
+          :label="region"
+          :value="region"
+        >
+        </v-radio>
+      </v-radio-group>
+    </v-navigation-drawer>
+
+    <v-app-bar app color="primary" dark clipped-left>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <span class="ml-2">REST Countries API app example</span>
     </v-app-bar>
+
     <v-content>
-      <v-row>
-        <v-col cols="3">
-          <v-card>
-            <v-card-text>
-              <v-radio-group v-model="selectedRegion" mandatory>
-                <v-radio
-                  v-for="region in regions"
-                  :key="region"
-                  :label="region"
-                  :value="region"
-                >
-                </v-radio>
-              </v-radio-group>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col cols="9">
-          <country-card
-            v-for="country in filteredCountries"
-            :key="country.alpha2Code"
-            :country="country"
-            :translations="defaulTranslations"
-          />
-        </v-col>
-      </v-row>
+      <country-card
+        v-for="country in filteredCountries"
+        :key="country.alpha2Code"
+        :country="country"
+        :translations="defaulTranslations"
+      />
     </v-content>
   </v-app>
 </template>
@@ -51,6 +46,7 @@ export default Vue.extend({
 
   data() {
     return {
+      drawer: true,
       countries: [] as Country[],
       defaulTranslations: ["de", "es", "it"],
       selectedRegion: ALL_REGIONS
