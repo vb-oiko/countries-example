@@ -5,9 +5,12 @@
     </v-app-bar>
 
     <v-content>
-      <div v-for="country in countries" :key="country.alpha2Code">
-        {{ country.name }}
-      </div>
+      <country-card
+        v-for="country in countries"
+        :key="country.alpha2Code"
+        :country="country"
+        :translations="defaulTranslations"
+      />
     </v-content>
   </v-app>
 </template>
@@ -16,21 +19,24 @@
 import Vue from "vue";
 import CountriesService from "./services/countries-service";
 import { Country } from "@/types";
+import CountryCard from "@/components/CountryCard.vue";
 
 export default Vue.extend({
   name: "App",
 
-  components: {},
+  components: {
+    CountryCard
+  },
 
   data() {
     return {
       countries: [] as Country[],
+      defaulTranslations: ["de", "es", "it"]
     };
   },
 
   async mounted() {
     this.countries = await CountriesService.fetchAll();
-    console.warn(this.countries[0]);
-  },
+  }
 });
 </script>
