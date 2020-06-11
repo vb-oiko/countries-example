@@ -18,12 +18,14 @@
     </v-app-bar>
 
     <v-content>
-      <country-card
-        v-for="country in filteredCountries"
-        :key="country.alpha2Code"
-        :country="country"
-        :translations="defaulTranslations"
-      />
+      <v-row justify="space-around" class="mx-2">
+        <country-card
+          v-for="country in filteredCountries"
+          :key="country.alpha2Code"
+          :country="country"
+          :translations="defaulTranslations"
+        />
+      </v-row>
     </v-content>
   </v-app>
 </template>
