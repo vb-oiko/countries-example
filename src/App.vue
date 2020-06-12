@@ -1,7 +1,13 @@
 <template>
   <v-app>
     <v-navigation-drawer app v-model="drawer" stateless color="primary" clipped>
-      <v-radio-group v-model="selectedRegion" mandatory dark class="ml-3">
+      <v-radio-group
+        v-if="countries.length"
+        v-model="selectedRegion"
+        mandatory
+        dark
+        class="ml-3"
+      >
         <v-radio
           v-for="region in regions"
           :key="region"
@@ -18,7 +24,10 @@
     </v-app-bar>
 
     <v-content>
-      <v-row justify="space-around" class="mx-2">
+      <v-row v-if="countries.length === 0" justify="space-around" class="mx-2">
+        <country-card-loader v-for="i in 12" :key="i" />
+      </v-row>
+      <v-row v-else justify="space-around" class="mx-2">
         <country-card
           v-for="country in filteredCountries"
           :key="country.alpha2Code"
@@ -35,6 +44,7 @@ import Vue from "vue";
 import CountriesService from "./services/countries-service";
 import { Country } from "@/types";
 import CountryCard from "@/components/CountryCard.vue";
+import CountryCardLoader from "@/components/CountryCardLoader.vue";
 
 const EMPTY_REGION = "Not Applicable";
 const ALL_REGIONS = "All";
@@ -43,7 +53,8 @@ export default Vue.extend({
   name: "App",
 
   components: {
-    CountryCard
+    CountryCard,
+    CountryCardLoader,
   },
 
   data() {
@@ -51,15 +62,15 @@ export default Vue.extend({
       drawer: true,
       countries: [] as Country[],
       defaulTranslations: ["de", "es", "it"],
-      selectedRegion: ALL_REGIONS
+      selectedRegion: ALL_REGIONS,
     };
   },
 
   computed: {
     regions(): string[] {
       const regions = [
-        ...new Set(this.countries.map(country => country.region))
-      ].map(region => (region === "" ? EMPTY_REGION : region));
+        ...new Set(this.countries.map((country) => country.region)),
+      ].map((region) => (region === "" ? EMPTY_REGION : region));
 
       return [...regions, ALL_REGIONS];
     },
@@ -73,11 +84,11 @@ export default Vue.extend({
         this.selectedRegion === EMPTY_REGION ? "" : this.selectedRegion;
 
       return this.countries.filter(({ region }) => region === filterRegion);
-    }
+    },
   },
 
   async mounted() {
     this.countries = await CountriesService.fetchAll();
-  }
+  },
 });
 </script>
